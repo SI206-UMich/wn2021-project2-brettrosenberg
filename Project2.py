@@ -14,8 +14,25 @@ def get_titles_from_search_results(filename):
 
     [('Book title 1', 'Author 1'), ('Book title 2', 'Author 2')...]
     """
-
-    pass
+    f = open(filename)
+    html = f.read()
+    f.close()
+    soup = beautifulSoup(html, 'html.parser')
+    book_titles = []
+    author_names = []
+    booktags = soup.find_all('tr')
+    for book in booktags:
+        titletag = book.find('a', class_ = 'bookTitle')
+        title = titletag.find('span').text
+        book_titles.append(title)
+        authortag = book.find('a', class_ = 'authorName')
+        author_name = authortag.find('span').text
+        author_names.append(author_name)
+    tup_list = []
+    for i in range(len(book_titles)):
+        tup_lst.append((book_titles[i], author_names[i]))
+    return tup_lst
+    
 
 
 def get_search_links():
@@ -31,8 +48,16 @@ def get_search_links():
     “https://www.goodreads.com/book/show/kdkd".
 
     """
-
-    pass
+    r = requests.get("https://www.goodreads.com/search?q=fantasy&qid=NwUsLiA2Nc")
+    soup = BeautifulSoup(r.content, 'html.parser')
+    urls = []
+    base = 'https://www.goodreads.com'
+    tags = soup.find_all('a', class_ = 'bookTitle')
+    for tag in tags:
+        url = tag.get('href')
+        urls.append(base+url)
+    return urls[:10]
+   
 
 
 def get_book_summary(book_url):
@@ -48,7 +73,8 @@ def get_book_summary(book_url):
     You can easily capture CSS selectors with your browser's inspector window.
     Make sure to strip() any newlines from the book title and number of pages.
     """
-
+    r = requests.get(book_url)
+    soup = BeautifulSoup(r.content, 'html.parser')
     pass
 
 
